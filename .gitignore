@@ -1,2 +1,9 @@
 .git
+
+# Terraform local state
 .terraform
+terraform.tfstate*
+errored.tfstate
+
+*.zip
+*.swp
