@@ -36,12 +36,18 @@ resource "aws_instance" "vta" {
   }
 
   provisioner "file" {
+    source      = "./webapp/app.js"
+    destination = "/tmp/app.js"
+  }
+
+  provisioner "file" {
     source      = "./webapp/setup.sh"
     destination = "~/bootstrap.sh"
   }
 
   provisioner "remote-exec" {
     inline = ["chmod +x ~/bootstrap.sh", "sudo ~/bootstrap.sh"]
+    #inline = ["chmod +x ~/bootstrap.sh"]
   }
 }
 
@@ -50,20 +56,20 @@ resource "aws_security_group" "allow_http" {
   description = "Allow http, ssh, node inbound traffic"
   vpc_id      = "${aws_default_vpc.default.id}"
 
-  ingress {
-    # TLS (change to whatever ports you need)
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    # Please restrict your ingress to only necessary IPs and ports.
-    # Opening to 0.0.0.0/0 can lead to security vulnerabilities.
-    cidr_blocks = ["0.0.0.0/0"]
-  }
+  #ingress {
+  #  # TLS (change to whatever ports you need)
+  #  from_port   = 80
+  #  to_port     = 80
+  #  protocol    = "tcp"
+  #  # Please restrict your ingress to only necessary IPs and ports.
+  #  # Opening to 0.0.0.0/0 can lead to security vulnerabilities.
+  #  cidr_blocks = ["0.0.0.0/0"]
+  #}
 
   ingress {
     # TLS (change to whatever ports you need)
-    from_port   = 3000
-    to_port     = 3000
+    from_port   = 80
+    to_port     = 3001
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
