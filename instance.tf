@@ -27,10 +27,12 @@ resource "aws_instance" "vta" {
     Name         = "vta"
   }
 
-  connection = {
-      type        = "ssh"
-      user        = "ubuntu"
-      timeout     = "20"
+  connection {
+    host        = self.public_ip
+    type        = "ssh"
+    user        = "ubuntu"
+    private_key = "${file("vtaKey.pem")}"
+    timeout     = "20"
   }
 
   provisioner "file" {

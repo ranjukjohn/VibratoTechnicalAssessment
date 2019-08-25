@@ -4,15 +4,17 @@
 # sudo yum install mysql -y
 sudo apt-get update
 # Install MySQL
-sudo apt-get install mysql-server -y
+echo mysql-server mysql-server/root_password select root | sudo debconf-set-selections
+echo mysql-server mysql-server/root_password_again select root | sudo debconf-set-selections
+sudo apt-get install -y mysql-server
 sudo apt-get install mysql-client -y
 
 # Start the MySQL service
 sudo systemctl start mysql
 # Launch at reboot
 sudo systemctl enable mysql
-sudo mysql -u root -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'root';"
-sudo /usr/bin/mysql --defaults-file=/etc/mysql/debian.cnf
+#sudo mysql -u root -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'root';"
+#sudo /usr/bin/mysql --defaults-file=/etc/mysql/debian.cnf
 
 
 # Install node version manager (nvm)
