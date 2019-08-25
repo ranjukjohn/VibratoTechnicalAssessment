@@ -16,6 +16,9 @@ sudo systemctl enable mysql
 #sudo mysql -u root -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'root';"
 #sudo /usr/bin/mysql --defaults-file=/etc/mysql/debian.cnf
 
+mysql -uroot -proot -e "create database if not exists mywebsite"
+mysql -uroot -proot -e "use mywebsite; create table chat (textline varchar(20))"
+mysql -uroot -proot -e "use mywebsite; insert into chat (textline) values('Hello\ World');"
 
 # Install node version manager (nvm)
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | bash
