@@ -2,8 +2,21 @@
 #
 # Setup the AWS instance
 #
+variable "ami" {
+  description = "The ami to launch the instance with"
+}
+
+variable "region" {
+  description = "The region to launch the instance to"
+}
+
+variable "key_name" {
+  description = "ssh key to the instance"
+}
+                                           
+
 provider "aws" {
-  region = "ap-southeast-2"
+  region = "${var.region}"
 }
 
 resource "aws_default_vpc" "default" {
@@ -13,11 +26,11 @@ resource "aws_default_vpc" "default" {
 }
 
 resource "aws_instance" "vta" {
-  ami                    = "ami-0edcec072887c2caa"
+  ami                    = "${var.ami}"
   instance_type          = "t2.micro"
   subnet_id              = "subnet-0ebbba47"
   vpc_security_group_ids = [ "${aws_security_group.allow_http.id}" ]
-  key_name               = "vtaKey"
+  key_name               = "${var.key_name}"
 
   root_block_device {
     delete_on_termination = true
@@ -46,7 +59,10 @@ resource "aws_instance" "vta" {
   }
 
   provisioner "remote-exec" {
-    inline = ["chmod +x ~/bootstrap.sh", "sudo ~/bootstrap.sh"]
+    inline = [
+      "chmod +x ~/bootstrap.sh",
+      "sudo ~/bootstrap.sh"
+    ]
     #inline = ["chmod +x ~/bootstrap.sh"]
   }
 }
@@ -56,19 +72,19 @@ resource "aws_security_group" "allow_http" {
   description = "Allow http, ssh, node inbound traffic"
   vpc_id      = "${aws_default_vpc.default.id}"
 
-  #ingress {
-  #  # TLS (change to whatever ports you need)
-  #  from_port   = 80
-  #  to_port     = 80
-  #  protocol    = "tcp"
-  #  # Please restrict your ingress to only necessary IPs and ports.
-  #  # Opening to 0.0.0.0/0 can lead to security vulnerabilities.
-  #  cidr_blocks = ["0.0.0.0/0"]
-  #}
-
   ingress {
     # TLS (change to whatever ports you need)
     from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    # Please restrict your ingress to only necessary IPs and ports.
+    # Opening to 0.0.0.0/0 can lead to security vulnerabilities.
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    # TLS (change to whatever ports you need)
+    from_port   = 3001
     to_port     = 3001
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]

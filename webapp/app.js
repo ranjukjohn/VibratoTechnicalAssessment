@@ -28,7 +28,7 @@ var connection = mysql.createConnection({
 connection.connect();
 
 app.get('/',(req, res) => {
-    connection.query("SELECT * FROM chat",(err, result) => {
+    connection.query("SELECT textline FROM chat",(err, result) => {
         if(err) {
             console.log(err);
             res.json({"error":true});
@@ -41,7 +41,7 @@ app.get('/',(req, res) => {
 });
 
 app.listen(3001, function () {
-    console.log('Connected to port 3000');
+    console.log('Connected to port 3001');
 });
 
 module.exports = app;
