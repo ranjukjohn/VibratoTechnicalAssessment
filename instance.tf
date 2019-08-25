@@ -47,7 +47,17 @@ resource "aws_security_group" "allow_http" {
     # TLS (change to whatever ports you need)
     from_port   = 3000
     to_port     = 3000
-    protocol    = "tcp"
+    protocol    = "Custom TCP Rule"
+    # Please restrict your ingress to only necessary IPs and ports.
+    # Opening to 0.0.0.0/0 can lead to security vulnerabilities.
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    # TLS (change to whatever ports you need)
+    from_port   = 22
+    to_port     = 22
+    protocol    = "ssh"
     # Please restrict your ingress to only necessary IPs and ports.
     # Opening to 0.0.0.0/0 can lead to security vulnerabilities.
     cidr_blocks = ["0.0.0.0/0"]
@@ -59,4 +69,20 @@ resource "aws_security_group" "allow_http" {
     protocol        = "-1"
     cidr_blocks     = ["0.0.0.0/0"]
   }
+}
+
+################################################################################
+#
+# Outputs
+#
+output "instance_id" {
+  value = "${aws_instance.vta.id}"
+}
+
+output "private_ip" {
+  value = "${aws_instance.vta.public_ip}"
+}
+
+output "private_ip" {
+  value = "${aws_instance.vta.public_port}"
 }
