@@ -1,6 +1,19 @@
 #!/usr/bin/env bash
 # Update all packages
-sudo yum update -y
+# sudo yum update -y
+# sudo yum install mysql -y
+sudo apt-get update
+# Install MySQL
+sudo apt-get install mysql-server -y
+sudo apt-get install mysql-client -y
+
+# Start the MySQL service
+sudo systemctl start mysql
+# Launch at reboot
+sudo systemctl enable mysql
+sudo mysql -u root -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'root';"
+sudo /usr/bin/mysql --defaults-file=/etc/mysql/debian.cnf
+
 
 # Install node version manager (nvm)
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | bash
@@ -27,6 +40,7 @@ express -v ejs -c sass vtcapp
 
 cd vtcapp
 npm install
+npm install mysql
 
 # Start the node server
 npm start &

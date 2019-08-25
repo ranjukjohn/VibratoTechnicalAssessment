@@ -13,7 +13,7 @@ resource "aws_default_vpc" "default" {
 }
 
 resource "aws_instance" "vta" {
-  ami                    = "ami-0dc96254d5535925f"
+  ami                    = "ami-0edcec072887c2caa"
   instance_type          = "t2.micro"
   subnet_id              = "subnet-0ebbba47"
   vpc_security_group_ids = [ "${aws_security_group.allow_http.id}" ]
@@ -26,11 +26,26 @@ resource "aws_instance" "vta" {
   tags =  {
     Name         = "vta"
   }
+
+  connection = {
+      type        = "ssh"
+      user        = "ubuntu"
+      timeout     = "20"
+  }
+
+  provisioner "file" {
+    source      = "./webapp/setup.sh"
+    destination = "~/bootstrap.sh"
+  }
+
+  provisioner "remote-exec" {
+    inline = ["chmod +x ~/bootstrap.sh", "sudo ~/bootstrap.sh"]
+  }
 }
 
 resource "aws_security_group" "allow_http" {
   name        = "allow_http"
-  description = "Allow http inbound traffic"
+  description = "Allow http, ssh, node inbound traffic"
   vpc_id      = "${aws_default_vpc.default.id}"
 
   ingress {
@@ -47,19 +62,15 @@ resource "aws_security_group" "allow_http" {
     # TLS (change to whatever ports you need)
     from_port   = 3000
     to_port     = 3000
-    protocol    = "Custom TCP Rule"
-    # Please restrict your ingress to only necessary IPs and ports.
-    # Opening to 0.0.0.0/0 can lead to security vulnerabilities.
+    protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
   ingress {
-    # TLS (change to whatever ports you need)
+    # SSH
     from_port   = 22
     to_port     = 22
-    protocol    = "ssh"
-    # Please restrict your ingress to only necessary IPs and ports.
-    # Opening to 0.0.0.0/0 can lead to security vulnerabilities.
+    protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
@@ -81,8 +92,4 @@ output "instance_id" {
 
 output "private_ip" {
   value = "${aws_instance.vta.public_ip}"
-}
-
-output "private_ip" {
-  value = "${aws_instance.vta.public_port}"
 }
