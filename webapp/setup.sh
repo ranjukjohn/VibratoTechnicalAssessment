@@ -49,6 +49,10 @@ mv /tmp/app.js ./app.js
 npm install
 npm install mysql
 
+# Redirect port 80 to port 3001
+sudo iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j REDIRECT --to-port 3001
+echo "iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j REDIRECT --to-port 3001" | sudo tee -a /etc/rc.local
+
 # Start node server in forever
 echo "npm start"
 sudo npm install forever --global
