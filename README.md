@@ -1,4 +1,6 @@
 # VibratoTechnicalAssessment (vta)
+The purpose of this project is to demonstrate the automation of the spin-up and installation of a single-machine 3-tier architecture as part of the Vibrato Technical Assessment.
+
 ## The environment
 The tiers are: client application, web server and database tiers
 Language: nodejs for client and server application
